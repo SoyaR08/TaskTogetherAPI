@@ -141,7 +141,7 @@ public class UsuarioController {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
 			}
 			
-			UserSimpleDTO usdto = new UserSimpleDTO(u);
+			MinUserInfo usdto = new MinUserInfo(u);
 			
 			return ResponseEntity.status(HttpStatus.OK).body(usdto);
 			
