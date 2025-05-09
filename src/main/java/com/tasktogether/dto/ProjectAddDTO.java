@@ -11,7 +11,7 @@ public class ProjectAddDTO {
 	private String start_date;
 	private String end_date;
 	private String status;
-	private Long user_creator;
+	private Long userCreator;
 
 	public ProjectAddDTO() {
 		super();
@@ -26,7 +26,7 @@ public class ProjectAddDTO {
 		this.start_date = start_date;
 		this.end_date = end_date;
 		this.status = status;
-		this.user_creator = user_creator;
+		this.userCreator = user_creator;
 	}
 
 	public String getName() {
@@ -69,12 +69,12 @@ public class ProjectAddDTO {
 		this.status = status;
 	}
 
-	public Long getUser_creator() {
-		return user_creator;
+	public Long getUserCreator() {
+		return userCreator;
 	}
 
-	public void setUser_creator(Long user_creator) {
-		this.user_creator = user_creator;
+	public void setUserCreator(Long user_creator) {
+		this.userCreator = user_creator;
 	}
 
 }

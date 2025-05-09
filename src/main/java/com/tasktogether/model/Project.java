@@ -44,10 +44,13 @@ public class Project {
 	@Column(name = "status")
 	@Schema(description = "Estado del proyecto", example = "IN_PROGRESS")
 	private String status;
+	@Column(name = "project_img")
+	@Schema(description = "Portada del proyecto")
+	private String project_img;
 	@ManyToOne
 	@JoinColumn(name = "user_creator")
 	@Schema(description = "Usuario que creo el proyecto", example = "admin")
-	private User user_creator;
+	private User userCreator;
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
 	@ArraySchema(schema = @Schema(implementation = Member.class, requiredMode = RequiredMode.REQUIRED))
 	private List<Member> members;
@@ -58,7 +61,7 @@ public class Project {
 	}
 
 	public Project(Long id, String name, String description, LocalDate start_date, LocalDate end_date,
-		String status, User user_creator) {
+		String status, String project_img, User user_creator) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -66,7 +69,8 @@ public class Project {
 		this.start_date = start_date;
 		this.end_date = end_date;
 		this.status = status;
-		this.user_creator = user_creator;
+		this.project_img = project_img;
+		this.userCreator = user_creator;
 	}
 
 	public Project(ProjectAddDTO p, LocalDate start_date, LocalDate end_date, User u) {
@@ -76,7 +80,7 @@ public class Project {
 		this.start_date = start_date;
 		this.end_date = start_date;
 		this.status = p.getStatus();
-		this.user_creator = u;
+		this.userCreator = u;
 	}
 
 	public Long getId() {
@@ -119,12 +123,28 @@ public class Project {
 		this.end_date = end_date;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getProject_img() {
+		return project_img;
+	}
+
+	public void setProject_img(String project_img) {
+		this.project_img = project_img;
+	}
+
 	public User getUser_creator() {
-		return user_creator;
+		return userCreator;
 	}
 
 	public void setUser_creator(User user_creator) {
-		this.user_creator = user_creator;
+		this.userCreator = user_creator;
 	}
 
 	@Override

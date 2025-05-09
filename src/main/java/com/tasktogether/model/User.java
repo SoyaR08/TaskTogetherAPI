@@ -54,7 +54,7 @@ public class User implements UserDetails {
 			+ "a Cloudinary", example = "https://cloudinary")
 	private String profile_pic;
 	
-	@OneToMany(mappedBy = "user_creator", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "userCreator", cascade = CascadeType.ALL, orphanRemoval = true)
 	@ArraySchema(schema = @Schema(implementation = Project.class, requiredMode = RequiredMode.REQUIRED))
 	private List<Project> projects;
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
