@@ -31,6 +31,10 @@ public class ProjectService {
 		return projectData.findAll();
 	}
 	
+	public Project findProject(Long id) {
+		return projectData.findById(id).orElse(null);
+	}
+	
 	public User findOwner(String email) {
 		List<User> user = userData.findByEmailLike(email);
 		return user.size() > 0 ? user.get(0) : null;
@@ -47,7 +51,17 @@ public class ProjectService {
 		return projectData.save(prt);
 	}
 	
+	public Project finish(Project p) {
+		return projectData.save(p);
+	}
+	
 
+	public Project parseAddToProject(ProjectAddDTO p) {
+		User u = userMethods.findUser(p.getUserCreator());
+		Project prt = new Project(p, LocalDate.parse(p.getStart_date()), LocalDate.parse(p.getEnd_date()), u);
+		return prt;
+	}
+	
 	public List<ProjectSimpleDTO> parseToSimpleDTO(List<Project> lp) {
 		
 		List<ProjectSimpleDTO> simpleList = lp.stream().map(project -> new ProjectSimpleDTO(project)).toList();

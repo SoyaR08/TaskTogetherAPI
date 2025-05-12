@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.tasktogether.dto.ProjectAddDTO;
+import com.tasktogether.dto.ProjectEditDTO;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -71,6 +72,19 @@ public class Project {
 		this.status = status;
 		this.project_img = project_img;
 		this.userCreator = user_creator;
+	}
+	
+	public Project(ProjectEditDTO p, User u) {
+		super();
+		this.id = p.getId();
+		this.name = p.getName();
+		this.description = p.getDescription();
+		this.start_date = LocalDate.parse(p.getStart_date());
+		this.end_date = LocalDate.parse(p.getEnd_date());
+		this.status = p.getStatus();
+		this.project_img = p.getProject_img();
+		this.userCreator = u;
+		
 	}
 
 	public Project(ProjectAddDTO p, LocalDate start_date, LocalDate end_date, User u) {
