@@ -61,6 +61,9 @@ public class User implements UserDetails {
 	@ArraySchema(schema = @Schema(implementation = Member.class, requiredMode = RequiredMode.REQUIRED))
 	private List<Member> memberOf;
 
+	@OneToMany(mappedBy = "userCreator", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Task> tasksCreated;
+	
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub

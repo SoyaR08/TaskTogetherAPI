@@ -65,10 +65,10 @@ public class ProjectController {
 			}
 			Pageable pageable;
 			if (pageNumber < 1) {
-				pageable = PageRequest.of(0, 3);
+				pageable = PageRequest.of(0, 9);
 			} else {
 
-				pageable = PageRequest.of(pageNumber - 1, 3);
+				pageable = PageRequest.of(pageNumber - 1, 9);
 			}
 
 			Page<Project> projects = projectMethods.getInProgressUserProjects(u, pageable);
