@@ -3,6 +3,8 @@ package com.tasktogether.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import com.tasktogether.dto.task.TaskAdd;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -48,6 +50,18 @@ public class Task {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Task(TaskAdd t, Project project,
+			User userCreator) {
+		super();
+		this.name = t.getName();
+		this.description = t.getDescription();
+		this.limitDate = LocalDate.parse(t.getLimitDate());
+		this.status = t.getStatus();
+		this.priority = t.getPriority();
+		this.project = project;
+		this.userCreator = userCreator; 
+	}
+	
 	public Task(Long id, String name, String description, String status, String priority, Project project,
 			User userCreator) {
 		super();
