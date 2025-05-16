@@ -1,6 +1,7 @@
 package com.tasktogether.service;
 
 import java.time.LocalDate;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.tasktogether.dto.ProjectAddDTO;
 import com.tasktogether.dto.ProjectSimpleDTO;
+
 import com.tasktogether.model.Project;
 import com.tasktogether.model.User;
+
 import com.tasktogether.repository.ProjectRepository;
 import com.tasktogether.repository.UserRepository;
 
@@ -23,6 +26,9 @@ public class ProjectService {
 	
 	@Autowired
 	UserRepository userData;
+	
+//	@Autowired
+//	HistoricalRepository historicalData;
 	
 	@Autowired
 	UserService userMethods;
@@ -55,6 +61,7 @@ public class ProjectService {
 		return projectData.save(p);
 	}
 	
+
 
 	public Project parseAddToProject(ProjectAddDTO p) {
 		User u = userMethods.findUser(p.getUserCreator());

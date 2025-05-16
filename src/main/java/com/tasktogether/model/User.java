@@ -48,12 +48,12 @@ public class User implements UserDetails {
 	@Column(name = "job")
 	@Schema(description = "Trabajo del usuario", example = "Abogado")
 	private String job;
-	
+
 	@Column(name = "profile_pic")
 	@Schema(description = "Url de la foto de perfil del usuario subida"
 			+ "a Cloudinary", example = "https://cloudinary")
 	private String profile_pic;
-	
+
 	@OneToMany(mappedBy = "userCreator", cascade = CascadeType.ALL, orphanRemoval = true)
 	@ArraySchema(schema = @Schema(implementation = Project.class, requiredMode = RequiredMode.REQUIRED))
 	private List<Project> projects;
@@ -63,7 +63,10 @@ public class User implements UserDetails {
 
 	@OneToMany(mappedBy = "userCreator", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Task> tasksCreated;
-	
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Historical> performedActions;
+
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -78,8 +81,6 @@ public class User implements UserDetails {
 		this.password = password;
 		this.job = job;
 	}
-
-	
 
 	public User(Long id, String name, String role, String address, String email, String password, String job,
 			String profile_pic) {
@@ -150,7 +151,7 @@ public class User implements UserDetails {
 	public void setJob(String job) {
 		this.job = job;
 	}
-	
+
 	public String getProfile_pic() {
 		return profile_pic;
 	}
@@ -159,12 +160,41 @@ public class User implements UserDetails {
 		this.profile_pic = profile_pic;
 	}
 
+	/**
+	 * Getters & Setters de las relaciones
+	 * 
+	 */
+	
 	public List<Project> getProjects() {
 		return projects;
 	}
 
 	public void setProjects(List<Project> projects) {
 		this.projects = projects;
+	}
+
+	public List<Member> getMemberOf() {
+		return memberOf;
+	}
+
+	public void setMemberOf(List<Member> memberOf) {
+		this.memberOf = memberOf;
+	}
+
+	public List<Task> getTasksCreated() {
+		return tasksCreated;
+	}
+
+	public void setTasksCreated(List<Task> tasksCreated) {
+		this.tasksCreated = tasksCreated;
+	}
+
+	public List<Historical> getPerformedActions() {
+		return performedActions;
+	}
+
+	public void setPerformedActions(List<Historical> performedActions) {
+		this.performedActions = performedActions;
 	}
 
 	@Override

@@ -55,17 +55,20 @@ public class Project {
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
 	@ArraySchema(schema = @Schema(implementation = Member.class, requiredMode = RequiredMode.REQUIRED))
 	private List<Member> members;
-	
+
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Task> tasks;
+
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Historical> historical;
 
 	public Project() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Project(Long id, String name, String description, LocalDate start_date, LocalDate end_date,
-		String status, String project_img, User user_creator) {
+	public Project(Long id, String name, String description, LocalDate start_date, LocalDate end_date, String status,
+			String project_img, User user_creator) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -76,7 +79,7 @@ public class Project {
 		this.project_img = project_img;
 		this.userCreator = user_creator;
 	}
-	
+
 	public Project(ProjectEditDTO p, User u) {
 		super();
 		this.id = p.getId();
@@ -87,7 +90,7 @@ public class Project {
 		this.status = p.getStatus();
 		this.project_img = p.getProject_img();
 		this.userCreator = u;
-		
+
 	}
 
 	public Project(ProjectAddDTO p, LocalDate start_date, LocalDate end_date, User u) {
@@ -162,6 +165,38 @@ public class Project {
 
 	public void setUser_creator(User user_creator) {
 		this.userCreator = user_creator;
+	}
+
+	public User getUserCreator() {
+		return userCreator;
+	}
+
+	public void setUserCreator(User userCreator) {
+		this.userCreator = userCreator;
+	}
+
+	public List<Member> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<Member> members) {
+		this.members = members;
+	}
+
+	public List<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
+	}
+
+	public List<Historical> getHistorical() {
+		return historical;
+	}
+
+	public void setHistorical(List<Historical> historical) {
+		this.historical = historical;
 	}
 
 	@Override

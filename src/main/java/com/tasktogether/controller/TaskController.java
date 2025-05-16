@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tasktogether.dto.task.TaskAdd;
 import com.tasktogether.dto.task.TaskList;
+import com.tasktogether.model.Historical;
 import com.tasktogether.model.Task;
+import com.tasktogether.service.HistoricalService;
 import com.tasktogether.service.TaskService;
 //import com.tasktogether.service.transform.TaskTransformService;
 
@@ -25,6 +27,9 @@ public class TaskController {
 	@Autowired
 	TaskService taskMethods;
 
+	@Autowired
+	HistoricalService historicalMethods;
+	
 //	@Autowired
 //	TaskTransformService taskParseMethods;
 
@@ -41,6 +46,7 @@ public class TaskController {
 		try {
 			 
 			Task newtask = taskMethods.add(t);
+			Historical h = historicalMethods.addNewTask(newtask);
 			response.put("message", "Tarea agregada con éxito");
 
 			return ResponseEntity.status(HttpStatus.OK).body(response);

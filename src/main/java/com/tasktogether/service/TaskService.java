@@ -35,6 +35,21 @@ public class TaskService {
 		return taskData.findAll();
 	}
 	
+	public List<Task> getUserTasks(Long id) throws Exception{
+		
+		User u = userData.findById(id).orElse(null);
+		
+		if (u == null) {
+			throw new Exception("Usuario no encontrado o no existente");
+		} else {
+			
+			List<Task> tasks = taskData.findByUserCreator(u);
+			
+			return null;
+		}
+		
+	}
+	
 	public Task add(TaskAdd t) throws Exception{
 		
 		Project p = projectData.findById(t.getProjectId()).orElse(null);

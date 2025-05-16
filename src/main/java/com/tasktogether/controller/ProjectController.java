@@ -1,7 +1,9 @@
 package com.tasktogether.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,9 +25,12 @@ import com.tasktogether.dto.ProjectAddDTO;
 import com.tasktogether.dto.ProjectEditDTO;
 import com.tasktogether.dto.ProjectListDTO;
 import com.tasktogether.dto.ProjectMinDTO;
+import com.tasktogether.dto.historical.HistoricalList;
+import com.tasktogether.model.Historical;
 import com.tasktogether.model.Project;
 import com.tasktogether.model.User;
 import com.tasktogether.security.TokenUtils;
+import com.tasktogether.service.HistoricalService;
 import com.tasktogether.service.ProjectService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +46,9 @@ public class ProjectController {
 	@Autowired
 	ProjectService projectMethods;
 
+	@Autowired
+	HistoricalService historicalMethods;
+	
 	@GetMapping("/projects")
 	public ResponseEntity<?> listProjects(@RequestHeader("Authorization") String token,
 			@RequestParam(defaultValue = "1", required = false) int pageNumber) {
@@ -99,7 +107,7 @@ public class ProjectController {
 			@Parameter(description = "Credenciales de crear proyecto", required = true) @RequestBody ProjectAddDTO pdto) {
 		
 		Project p = projectMethods.add(pdto);
-		
+		Historical h = historicalMethods.addChange(p, p.getUser_creator());
 		ProjectMinDTO pmdto = new ProjectMinDTO(p);
 		
 		return ResponseEntity.ok(pmdto);
@@ -137,6 +145,33 @@ public class ProjectController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
 		}
 
+	}
+	
+	@GetMapping("/projects/{id}/historical")
+	public ResponseEntity<?> getHistorical(@RequestHeader("Authorization") String token, @PathVariable Long id) {
+		if (token == null || token.isEmpty()) {
+			Map<String, String> body = new HashMap<String, String>();
+			body.put("error", "403");
+			body.put("message", "Token is required");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+		}
+		
+		Project p = projectMethods.findProject(id);
+		
+		if (p == null) {
+			Map<String, String> body = new HashMap<String, String>();
+			body.put("error", "400");
+			body.put("message", "Proyecto no encontrado o inexistente");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+		}
+		
+		p.getHistorical().sort((h1, h2) -> h2.getId().intValue() - h1.getId().intValue());
+		
+		List<HistoricalList> history = p.getHistorical().stream().map(projectRecord -> {
+			return new HistoricalList(projectRecord);
+		}).collect(Collectors.toList());
+		
+		return ResponseEntity.status(HttpStatus.OK).body(history);
 	}
 
 }
