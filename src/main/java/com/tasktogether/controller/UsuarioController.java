@@ -56,10 +56,10 @@ public class UsuarioController {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private EmailService emailservice;
-	
+
 //	@Autowired
 //	private CloudinaryLib cloudinarylib;
 
@@ -108,50 +108,49 @@ public class UsuarioController {
 
 	}
 
-	//Para obtener los datos de un usuario dado el email
+	// Para obtener los datos de un usuario dado el email
 	@GetMapping("/api/users/{email}")
-	public ResponseEntity<?> getUserByEmail(@RequestHeader("Authorization") String token,
-			@PathVariable String email) {
+	public ResponseEntity<?> getUserByEmail(@RequestHeader("Authorization") String token, @PathVariable String email) {
 		if (token == null || token.isEmpty()) {
 			Map<String, String> body = new HashMap<String, String>();
 			body.put("error", "403");
 			body.put("message", "Token is required");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
 		}
-		
+
 		try {
-			//Decodifico el token para asegurarme de que
+			// Decodifico el token para asegurarme de que
 			UsernamePasswordAuthenticationToken auth = TokenUtils.decodeToken(token);
 			String role = auth.getAuthorities().iterator().next().getAuthority();
-			String principal = auth.getName(); //Me va a dar el email
-			
+			String principal = auth.getName(); // Me va a dar el email
+
 			if (!role.equals("GEN_ADMIN") && principal != email) {
 				Map<String, String> body = new HashMap<String, String>();
 				body.put("error", "403");
 				body.put("message", "You don´t have permission for this");
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
 			}
-			
+
 			User u = usuarioService.findUserByUsername(principal);
-			
+
 			if (u == null) {
 				Map<String, String> body = new HashMap<String, String>();
 				body.put("error", "404");
 				body.put("message", "User don´t exists");
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
 			}
-			
+
 			MinUserInfo usdto = new MinUserInfo(u);
-			
+
 			return ResponseEntity.status(HttpStatus.OK).body(usdto);
-			
+
 		} catch (MalformedJwtException e) {
 			System.err.println(e.getMessage());
 			Map<String, String> body = new HashMap<String, String>();
 			body.put("error", "400");
 			body.put("message", e.getMessage());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
-			
+
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			Map<String, String> body = new HashMap<String, String>();
@@ -159,12 +158,28 @@ public class UsuarioController {
 			body.put("message", e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
 		}
-		
+
 	}
-	
-	
-	@PutMapping(value="/users/{id}", 
-			consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+
+	@GetMapping("/nonauth/users/{email}")
+	public ResponseEntity<?> nonAuthGetUserByMail(@PathVariable String email) {
+
+		Map<String, String> body = new HashMap<String, String>();
+		boolean u = usuarioService.checkMailIsUnique(email);
+
+		if (!u) {
+			body.put("error", "404");
+			body.put("message", "User don´t exist");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+		}
+
+		body.put("status", "200");
+		body.put("message", "Email already registered");
+		return ResponseEntity.status(HttpStatus.OK).body(body);
+	}
+
+	@PutMapping(value = "/users/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
 	@Operation(summary = "Editar usuario por ID", description = "Devuelve al usuario editado")
 	@ApiResponses({ @ApiResponse(responseCode = "401", description = "Token requerido"),
 			@ApiResponse(responseCode = "200", description = "Usuario editado"),
@@ -192,9 +207,9 @@ public class UsuarioController {
 					newUser.setEmail(u.getEmail());
 					String raw = put.getPassword();
 					if (raw != null && !raw.isBlank()) {
-					   newUser.setPassword(passwordEncoder.encode(raw));
+						newUser.setPassword(passwordEncoder.encode(raw));
 					} else {
-					   newUser.setPassword(u.getPassword());
+						newUser.setPassword(u.getPassword());
 					}
 					try {
 						newUser.setProfile_pic(usuarioService.uploadFile(profile_pic));
@@ -204,7 +219,7 @@ public class UsuarioController {
 						body.put("message", e.getMessage());
 						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
 					}
-					
+
 					User response = usuarioService.save(newUser);
 					return ResponseEntity.status(HttpStatus.OK).body(usuarioService.parseToDTO(response));
 				} else {
@@ -235,17 +250,19 @@ public class UsuarioController {
 		}
 
 	}
-	
+
 	@PutMapping("/users/role/{id}")
-	public ResponseEntity<?> changeUserRole(@RequestHeader("Authorization") String token,
-			@PathVariable Long id, @RequestBody UserChangeRole newRole) {
+	public ResponseEntity<?> changeUserRole(@RequestHeader("Authorization") String token, @PathVariable Long id,
+			@RequestBody UserChangeRole newRole) {
 		if (token == null || token.isEmpty()) {
-			/*Como la respuesta en este caso es siempre la misma decidí hacerlo así
-			 * para tratar de mantener un código más limpio*/
+			/*
+			 * Como la respuesta en este caso es siempre la misma decidí hacerlo así para
+			 * tratar de mantener un código más limpio
+			 */
 			return usuarioService.noTokenResponse();
 		} else {
 			try {
-				//Arreglar excepción token mal formado
+				// Arreglar excepción token mal formado
 				UsernamePasswordAuthenticationToken authentication = TokenUtils.decodeToken(token);
 				String role = authentication.getAuthorities().iterator().next().getAuthority();
 
@@ -278,7 +295,7 @@ public class UsuarioController {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
 			}
 		}
-		
+
 	}
 
 	@DeleteMapping("/users/{id}")
@@ -352,41 +369,39 @@ public class UsuarioController {
 		token.put("token", jwt);
 		return ResponseEntity.ok(token);
 	}
-	
+
 	@PostMapping("/register")
 	@Operation(summary = "Registrar a un usuario", description = "Devuelve los datos del usuario registrado")
-	 @ApiResponses({
-		    
-		    @ApiResponse(responseCode = "200", description = "Usuario registrado")
-		    
-		 })
+	@ApiResponses({
+
+			@ApiResponse(responseCode = "200", description = "Usuario registrado")
+
+	})
 	public ResponseEntity<?> registerUser(
-			 @Parameter(description = "Credenciales de registro", required = true) @RequestBody RegisterDTO register) throws Exception {
-		
+			@Parameter(description = "Credenciales de registro", required = true) @RequestBody RegisterDTO register)
+			throws Exception {
+
 		if (usuarioService.checkMailIsUnique(register.getEmail())) {
 			Map<String, String> response = new HashMap<>();
 			response.put("error", "400");
 			response.put("message", "The introduced email is already registered");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
-		
-		User u = usuarioService.save(new User(register.getName(), "USER", register.getAddress(), 
-				register.getEmail(), passwordEncoder.encode(register.getPassword()), register.getJob()));
+
+		User u = usuarioService.save(new User(register.getName(), "USER", register.getAddress(), register.getEmail(),
+				passwordEncoder.encode(register.getPassword()), register.getJob()));
 
 		if (u != null) {
-			
+
 			UserDTO dto = new UserDTO(u, new ArrayList<ProjectSimpleDTO>());
 			emailservice.sendVerification(u);
 			return ResponseEntity.ok(dto);
 		} else {
 			throw new Exception();
 		}
-		
-		
+
 	}
-	
-	
-	
+
 //	@PutMapping(value = "/users/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //	@Operation(summary = "Editar usuario por ID", description = "Devuelve al usuario editado")
 //	@ApiResponses({
@@ -470,9 +485,7 @@ public class UsuarioController {
 //	    }
 //	}
 
-	
-	
-	//Por si acaso necesito codificar las contraseñas
+	// Por si acaso necesito codificar las contraseñas
 //	@GetMapping("/usersPass")
 //	public ResponseEntity<?> listUsersPass() {
 //		List<User> users = usuarioService.getUsers();
