@@ -1,10 +1,12 @@
 package com.tasktogether.model;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 import com.tasktogether.dto.task.TaskAdd;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -45,13 +48,15 @@ public class Task {
 	@JoinColumn(name = "user_creator")
 	private User userCreator;
 
+	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<TaskUser> assignedUsers;
+
 	public Task() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Task(TaskAdd t, Project project,
-			User userCreator) {
+	public Task(TaskAdd t, Project project, User userCreator) {
 		super();
 		this.name = t.getName();
 		this.description = t.getDescription();
@@ -59,9 +64,9 @@ public class Task {
 		this.status = t.getStatus();
 		this.priority = t.getPriority();
 		this.project = project;
-		this.userCreator = userCreator; 
+		this.userCreator = userCreator;
 	}
-	
+
 	public Task(Long id, String name, String description, String status, String priority, Project project,
 			User userCreator) {
 		super();
@@ -136,6 +141,14 @@ public class Task {
 
 	public void setUserCreator(User userCreator) {
 		this.userCreator = userCreator;
+	}
+
+	public List<TaskUser> getAssignedUsers() {
+		return assignedUsers;
+	}
+
+	public void setAssignedUsers(List<TaskUser> assignedUsers) {
+		this.assignedUsers = assignedUsers;
 	}
 
 	@Override

@@ -67,6 +67,9 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Historical> performedActions;
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<TaskUser> assignedTasks;
+
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -164,7 +167,7 @@ public class User implements UserDetails {
 	 * Getters & Setters de las relaciones
 	 * 
 	 */
-	
+
 	public List<Project> getProjects() {
 		return projects;
 	}
@@ -195,6 +198,14 @@ public class User implements UserDetails {
 
 	public void setPerformedActions(List<Historical> performedActions) {
 		this.performedActions = performedActions;
+	}
+
+	public List<TaskUser> getAssignedTasks() {
+		return assignedTasks;
+	}
+
+	public void setAssignedTasks(List<TaskUser> assignedTasks) {
+		this.assignedTasks = assignedTasks;
 	}
 
 	@Override

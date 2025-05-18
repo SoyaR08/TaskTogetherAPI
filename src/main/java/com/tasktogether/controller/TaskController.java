@@ -46,7 +46,7 @@ public class TaskController {
 		try {
 			 
 			Task newtask = taskMethods.add(t);
-			Historical h = historicalMethods.addNewTask(newtask);
+			//Historical h = historicalMethods.addNewTask(newtask);
 			response.put("message", "Tarea agregada con éxito");
 
 			return ResponseEntity.status(HttpStatus.OK).body(response);

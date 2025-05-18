@@ -97,6 +97,38 @@ public class ProjectController {
 
 	}
 
+	@GetMapping("/projects/{id}")
+	public ResponseEntity<?> getProject(@RequestHeader("Authorization") String token,
+			@PathVariable Long id) {
+		if (token == null || token.isEmpty()) {
+			Map<String, String> body = new HashMap<String, String>();
+			body.put("error", "403");
+			body.put("message", "Token is required");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+		}
+		
+		try {
+			
+			Project p = projectMethods.findProject(id);
+			
+			if (p == null) {
+				throw new Exception("Proyecto no encontrado o inexistente");
+			}
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			Map<String, String> body = new HashMap<String, String>();
+			body.put("error", "500");
+			body.put("message", e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+		}
+		
+		
+		return null;
+	}
+	
 	@PostMapping("/projects/add")
 	@Operation(summary = "Crear un proyecto", description = "Devuelve un usuario basado en su ID")
 	@ApiResponses({
