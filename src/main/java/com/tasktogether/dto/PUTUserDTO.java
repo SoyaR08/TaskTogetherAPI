@@ -3,23 +3,30 @@ package com.tasktogether.dto;
 public class PUTUserDTO {
 
 	private String name;
-	
-	private String role;
-	
-	private String address;
-	
-	private String email;
-	
-	private String password;
-	
-	private String job;
 
+	private String role;
+
+	private String address;
+
+	private String email;
+
+	private String password;
+
+	private String job;
 	public PUTUserDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	
+	public PUTUserDTO(String name, String role, String address, String email, String password, String job) {
+		super();
+		this.name = name;
+		this.role = role;
+		this.address = address;
+		this.email = email;
+		this.password = password;
+		this.job = job;
+	}
 
 	public String getName() {
 		return name;
@@ -68,7 +75,7 @@ public class PUTUserDTO {
 	public void setJob(String job) {
 		this.job = job;
 	}
-	
+
 	
 	
 }

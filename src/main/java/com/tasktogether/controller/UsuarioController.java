@@ -1,5 +1,7 @@
 package com.tasktogether.controller;
 
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +9,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,16 +21,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasktogether.dto.MinUserInfo;
 import com.tasktogether.dto.PUTUserDTO;
 import com.tasktogether.dto.ProjectSimpleDTO;
 import com.tasktogether.dto.UserChangeRole;
 import com.tasktogether.dto.UserDTO;
-import com.tasktogether.dto.UserSimpleDTO;
 import com.tasktogether.dto.access.LoginDTO;
 import com.tasktogether.dto.access.RegisterDTO;
 import com.tasktogether.model.User;
@@ -178,8 +181,7 @@ public class UsuarioController {
 		return ResponseEntity.status(HttpStatus.OK).body(body);
 	}
 
-	@PutMapping(value = "/users/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
-			MediaType.APPLICATION_JSON_VALUE })
+	@PutMapping(value = "/users/{id}")
 	@Operation(summary = "Editar usuario por ID", description = "Devuelve al usuario editado")
 	@ApiResponses({ @ApiResponse(responseCode = "401", description = "Token requerido"),
 			@ApiResponse(responseCode = "200", description = "Usuario editado"),
@@ -187,8 +189,8 @@ public class UsuarioController {
 	public ResponseEntity<?> editUser(
 			@Parameter(description = "token del usuario", required = true) @RequestHeader("Authorization") String token,
 			@Parameter(description = "ID del usuario", example = "1", required = true) @PathVariable Long id,
-			@Parameter(description = "Datos a editar del usuario", required = true) @RequestPart("put") PUTUserDTO put,
-			@RequestPart("profile_pic") MultipartFile profile_pic) {
+			@Parameter(description = "Datos a editar del usuario", required = true) @RequestParam String stringPUT,
+			@RequestParam("profile_pic") MultipartFile profile_pic) {
 		if (token == null || token.isEmpty()) {
 			Map<String, String> body = new HashMap<String, String>();
 			body.put("error", "403");
@@ -200,6 +202,19 @@ public class UsuarioController {
 
 			User u = usuarioService.findUser(id);
 
+			ObjectMapper obj = new ObjectMapper();
+			
+			PUTUserDTO put = new PUTUserDTO();
+			try {
+				put = obj.readValue(stringPUT, PUTUserDTO.class);
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			if (u != null) {
 				if ("GEN_ADMIN".equals(role)) {
 					User newUser = usuarioService.parseToUser(put);
