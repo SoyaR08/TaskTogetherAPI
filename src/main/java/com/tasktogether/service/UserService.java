@@ -122,7 +122,7 @@ public class UserService implements UserDetailsService{
 			boolean isDeleted = uploadedFile.delete();
 			if (isDeleted) {
 				System.out.println("File successfully deleted");
-				return "";
+				return uploadResult.get("url").toString();
 			} else {
 				System.out.println("File doesn't exist");
 				return uploadResult.get("url").toString();
