@@ -1,7 +1,7 @@
 package com.tasktogether.service;
 
 import java.time.LocalDate;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +9,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.tasktogether.dto.MinUserInfo;
 import com.tasktogether.dto.ProjectAddDTO;
 import com.tasktogether.dto.ProjectSimpleDTO;
-
+import com.tasktogether.dto.project.ProjectHome;
+import com.tasktogether.dto.task.TaskList;
+import com.tasktogether.dto.user.UserMember;
 import com.tasktogether.model.Project;
 import com.tasktogether.model.User;
-
 import com.tasktogether.repository.ProjectRepository;
 import com.tasktogether.repository.UserRepository;
 
@@ -73,6 +75,36 @@ public class ProjectService {
 		
 		List<ProjectSimpleDTO> simpleList = lp.stream().map(project -> new ProjectSimpleDTO(project)).toList();
 		return simpleList;
+	}
+	
+	public ProjectHome mapProjectToProjectHome(Project p) {
+		
+		List<TaskList> pending = new ArrayList<>();
+		List<TaskList> progress = new ArrayList<>();
+		List<TaskList> finished = new ArrayList<>();
+		
+		p.getTasks().forEach(t -> {
+			
+			switch (t.getStatus()) {
+			case 0: 
+				pending.add(new TaskList(t));
+				break;
+			case 1:
+				progress.add(new TaskList(t));
+				break;
+			
+			case 2:
+				finished.add(new TaskList(t));
+				break;
+				
+			}
+		});;
+		
+		List<UserMember> listDTO = p.getMembers().stream().map(user -> {
+			return new UserMember(user);
+		}).toList();
+		
+		return new ProjectHome(p, listDTO, pending, progress, finished);
 	}
 	
 }

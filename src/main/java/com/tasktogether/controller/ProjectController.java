@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tasktogether.dto.ProjectAddDTO;
 import com.tasktogether.dto.ProjectEditDTO;
 import com.tasktogether.dto.ProjectListDTO;
-import com.tasktogether.dto.ProjectMinDTO;
+import com.tasktogether.dto.Projectmindto;
 import com.tasktogether.dto.historical.HistoricalList;
+import com.tasktogether.dto.project.ProjectHome;
+import com.tasktogether.libraries.Defaultresponse;
 import com.tasktogether.model.Historical;
 import com.tasktogether.model.Project;
 import com.tasktogether.model.User;
@@ -46,9 +48,12 @@ public class ProjectController {
 	@Autowired
 	ProjectService projectMethods;
 
+//	@Autowired
+//	HistoricalService historicalMethods;
+
 	@Autowired
-	HistoricalService historicalMethods;
-	
+	Defaultresponse serverResponse;
+
 	@GetMapping("/projects")
 	public ResponseEntity<?> listProjects(@RequestHeader("Authorization") String token,
 			@RequestParam(defaultValue = "1", required = false) int pageNumber) {
@@ -66,16 +71,14 @@ public class ProjectController {
 			User u = projectMethods.findOwner(principal);
 
 			if (u == null) {
-				Map<String, String> body = new HashMap<String, String>();
-				body.put("error", "404");
-				body.put("message", "No se ha encontrado al usuario con el email dado");
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+				return serverResponse.notfoundResponse("No se ha encontrado al usuario con el email dado");
 			}
+			
 			Pageable pageable;
+			
 			if (pageNumber < 1) {
 				pageable = PageRequest.of(0, 9);
 			} else {
-
 				pageable = PageRequest.of(pageNumber - 1, 9);
 			}
 
@@ -98,25 +101,22 @@ public class ProjectController {
 	}
 
 	@GetMapping("/projects/{id}")
-	public ResponseEntity<?> getProject(@RequestHeader("Authorization") String token,
-			@PathVariable Long id) {
+	public ResponseEntity<?> getProject(@RequestHeader("Authorization") String token, @PathVariable Long id) {
 		if (token == null || token.isEmpty()) {
 			Map<String, String> body = new HashMap<String, String>();
 			body.put("error", "403");
 			body.put("message", "Token is required");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
 		}
-		
+
 		try {
-			
+
 			Project p = projectMethods.findProject(id);
-			
+
 			if (p == null) {
 				throw new Exception("Proyecto no encontrado o inexistente");
 			}
-			
-			
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			Map<String, String> body = new HashMap<String, String>();
@@ -124,26 +124,24 @@ public class ProjectController {
 			body.put("message", e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
 		}
-		
-		
+
 		return null;
 	}
-	
+
 	@PostMapping("/projects/add")
 	@Operation(summary = "Crear un proyecto", description = "Devuelve un usuario basado en su ID")
 	@ApiResponses({
-		    
-		    @ApiResponse(responseCode = "200", description = "Proyecto creado")
-		 })
+
+			@ApiResponse(responseCode = "200", description = "Proyecto creado") })
 	public ResponseEntity<?> addProyect(
 			@Parameter(description = "Credenciales de crear proyecto", required = true) @RequestBody ProjectAddDTO pdto) {
-		
+
 		Project p = projectMethods.add(pdto);
-		Historical h = historicalMethods.addChange(p, p.getUser_creator());
-		ProjectMinDTO pmdto = new ProjectMinDTO(p);
-		
+		// Historical h = historicalMethods.addChange(p, p.getUser_creator());
+		Projectmindto pmdto = new Projectmindto(p);
+
 		return ResponseEntity.ok(pmdto);
-		
+
 	}
 
 	@PatchMapping("/projects/{id}")
@@ -167,7 +165,7 @@ public class ProjectController {
 
 			prj.setStatus(p.getStatus());
 
-			ProjectMinDTO pmdto = new ProjectMinDTO(projectMethods.finish(prj));
+			Projectmindto pmdto = new Projectmindto(projectMethods.finish(prj));
 
 			return ResponseEntity.ok(pmdto);
 		} catch (Exception e) {
@@ -178,7 +176,7 @@ public class ProjectController {
 		}
 
 	}
-	
+
 	@GetMapping("/projects/{id}/historical")
 	public ResponseEntity<?> getHistorical(@RequestHeader("Authorization") String token, @PathVariable Long id) {
 		if (token == null || token.isEmpty()) {
@@ -187,23 +185,40 @@ public class ProjectController {
 			body.put("message", "Token is required");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
 		}
-		
+
 		Project p = projectMethods.findProject(id);
-		
+
 		if (p == null) {
 			Map<String, String> body = new HashMap<String, String>();
 			body.put("error", "400");
 			body.put("message", "Proyecto no encontrado o inexistente");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
 		}
-		
+
 		p.getHistorical().sort((h1, h2) -> h2.getId().intValue() - h1.getId().intValue());
-		
+
 		List<HistoricalList> history = p.getHistorical().stream().map(projectRecord -> {
 			return new HistoricalList(projectRecord);
 		}).collect(Collectors.toList());
-		
+
 		return ResponseEntity.status(HttpStatus.OK).body(history);
+	}
+
+	@GetMapping("/projects/dashboard/{id}")
+	public ResponseEntity<?> getProjectDashboard(@RequestHeader("Authorization") String token, @PathVariable Long id) {
+		if (token == null || token.isEmpty()) {
+			return serverResponse.forbiddenResponse("Token is required");
+		}
+
+		Project p = projectMethods.findProject(id);
+
+		if (p == null) {
+			return serverResponse.notfoundResponse("Proyecto no encontrado o no existente");
+		}
+
+		ProjectHome ph = projectMethods.mapProjectToProjectHome(p);
+
+		return ResponseEntity.status(HttpStatus.OK).body(ph);
 	}
 
 }

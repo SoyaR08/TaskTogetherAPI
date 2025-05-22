@@ -12,7 +12,7 @@ public class TaskHome {
 	
 	private String limitDate;
 	
-	private String status;
+	private Integer status;
 	
 	private String priority;
 
@@ -21,7 +21,7 @@ public class TaskHome {
 		// TODO Auto-generated constructor stub
 	}
 
-	public TaskHome(Long id, String name, String description, String limitDate, String status, String priority) {
+	public TaskHome(Long id, String name, String description, String limitDate, Integer status, String priority) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -73,11 +73,11 @@ public class TaskHome {
 		this.limitDate = limitDate;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

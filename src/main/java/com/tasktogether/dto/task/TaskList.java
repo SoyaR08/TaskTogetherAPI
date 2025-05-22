@@ -1,7 +1,9 @@
 package com.tasktogether.dto.task;
 
+import java.util.List;
+
 import com.tasktogether.dto.MinUserInfo;
-import com.tasktogether.dto.ProjectMinDTO;
+import com.tasktogether.dto.Projectmindto;
 import com.tasktogether.model.Task;
 
 
@@ -15,21 +17,23 @@ public class TaskList {
 	
 	private String limitDate;
 	
-	private String status;
+	private Integer status;
 	
 	private String priority;
 	
-	private ProjectMinDTO project;
+	private Projectmindto project;
 	
 	private MinUserInfo userCreator;
+	
+	private List<MinUserInfo> workers;
 
 	public TaskList() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public TaskList(Long id, String name, String description, String limitDate, String status, String priority,
-			ProjectMinDTO project, MinUserInfo userCreator) {
+	public TaskList(Long id, String name, String description, String limitDate, Integer status, String priority,
+			Projectmindto project, MinUserInfo userCreator, List<MinUserInfo> workers) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -39,6 +43,7 @@ public class TaskList {
 		this.priority = priority;
 		this.project = project;
 		this.userCreator = userCreator;
+		this.workers = workers;
 	}
 	
 	public TaskList(Task t) {
@@ -49,8 +54,21 @@ public class TaskList {
 		this.limitDate = t.getLimitDate().toString();
 		this.status = t.getStatus();
 		this.priority = t.getPriority();
-		this.project = new ProjectMinDTO(t.getProject());
+		this.project = new Projectmindto(t.getProject());
 		this.userCreator = new MinUserInfo(t.getUserCreator());
+	}
+	
+	public TaskList(Task t, List<MinUserInfo> workers) {
+		super();
+		this.id = t.getId();
+		this.name = t.getName();
+		this.description = t.getDescription();
+		this.limitDate = t.getLimitDate().toString();
+		this.status = t.getStatus();
+		this.priority = t.getPriority();
+		this.project = new Projectmindto(t.getProject());
+		this.userCreator = new MinUserInfo(t.getUserCreator());
+		this.workers = workers;
 	}
 
 	public Long getId() {
@@ -85,11 +103,11 @@ public class TaskList {
 		this.limitDate = limitDate;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
@@ -101,11 +119,11 @@ public class TaskList {
 		this.priority = priority;
 	}
 
-	public ProjectMinDTO getProject() {
+	public Projectmindto getProject() {
 		return project;
 	}
 
-	public void setProject(ProjectMinDTO project) {
+	public void setProject(Projectmindto project) {
 		this.project = project;
 	}
 
@@ -115,6 +133,14 @@ public class TaskList {
 
 	public void setUserCreator(MinUserInfo userCreator) {
 		this.userCreator = userCreator;
+	}
+
+	public List<MinUserInfo> getWorkers() {
+		return workers;
+	}
+
+	public void setWorkers(List<MinUserInfo> workers) {
+		this.workers = workers;
 	}
 	
 	

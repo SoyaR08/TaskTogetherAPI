@@ -35,6 +35,7 @@ import com.tasktogether.dto.UserChangeRole;
 import com.tasktogether.dto.UserDTO;
 import com.tasktogether.dto.access.LoginDTO;
 import com.tasktogether.dto.access.RegisterDTO;
+import com.tasktogether.libraries.Defaultresponse;
 import com.tasktogether.model.User;
 import com.tasktogether.security.TokenUtils;
 import com.tasktogether.service.EmailService;
@@ -63,6 +64,9 @@ public class UsuarioController {
 	@Autowired
 	private EmailService emailservice;
 
+	@Autowired
+	Defaultresponse serverResponse;
+	
 //	@Autowired
 //	private CloudinaryLib cloudinarylib;
 
@@ -115,10 +119,7 @@ public class UsuarioController {
 	@GetMapping("/api/users/{email}")
 	public ResponseEntity<?> getUserByEmail(@RequestHeader("Authorization") String token, @PathVariable String email) {
 		if (token == null || token.isEmpty()) {
-			Map<String, String> body = new HashMap<String, String>();
-			body.put("error", "403");
-			body.put("message", "Token is required");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+			return serverResponse.forbiddenResponse("Token is required");
 		}
 
 		try {
@@ -127,14 +128,17 @@ public class UsuarioController {
 			String role = auth.getAuthorities().iterator().next().getAuthority();
 			String principal = auth.getName(); // Me va a dar el email
 
+			// Tengo que hacer que un usuario regular también pueda usar este endpoint
+			
 			if (!role.equals("GEN_ADMIN") && principal != email) {
-				Map<String, String> body = new HashMap<String, String>();
-				body.put("error", "403");
-				body.put("message", "You don´t have permission for this");
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+				return serverResponse.unauthorizedResponse("You don´t have permission for this");
 			}
+			
+			
+			
+			
 
-			User u = usuarioService.findUserByUsername(principal);
+			User u = usuarioService.findUserByUsername(email);
 
 			if (u == null) {
 				Map<String, String> body = new HashMap<String, String>();
@@ -417,88 +421,7 @@ public class UsuarioController {
 
 	}
 
-//	@PutMapping(value = "/users/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//	@Operation(summary = "Editar usuario por ID", description = "Devuelve al usuario editado")
-//	@ApiResponses({
-//	    @ApiResponse(responseCode = "401", description = "Token requerido"),
-//	    @ApiResponse(responseCode = "200", description = "Usuario editado"),
-//	    @ApiResponse(responseCode = "403", description = "No autorizado")
-//	})
-//	public ResponseEntity<?> editUser(
-//	        @Parameter(description = "token del usuario", required = true)
-//	        @RequestHeader("Authorization") String token,
-//
-//	        @Parameter(description = "ID del usuario", example = "1", required = true)
-//	        @PathVariable Long id,
-//
-//	        @ModelAttribute PUTUserDTO put, // <-- CAMBIO AQUÍ
-//
-//	        @RequestParam(value = "profile_pic", required = false) MultipartFile profile_pic // <-- CAMBIO AQUÍ
-//	) {
-//	    System.out.println("He entrado en el controlador");
-//
-//	    if (token == null || token.isEmpty()) {
-//	        Map<String, String> body = new HashMap<>();
-//	        body.put("error", "403");
-//	        body.put("message", "Token is required");
-//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
-//	    }
-//
-//	    UsernamePasswordAuthenticationToken authentication = TokenUtils.decodeToken(token);
-//	    String role = authentication.getAuthorities().iterator().next().getAuthority();
-//	    User u = usuarioService.findUser(id);
-//
-//	    if (u != null) {
-//	        User newUser = usuarioService.parseToUser(put);
-//	        newUser.setId(u.getId());
-//
-//	        if ("GEN_ADMIN".equals(role)) {
-//	            System.out.println("Soy admin");
-//	            newUser.setEmail(u.getEmail());
-//	            String raw = put.getPassword();
-//	            if (raw != null && !raw.isBlank()) {
-//	                newUser.setPassword(passwordEncoder.encode(raw));
-//	            } else {
-//	                newUser.setPassword(u.getPassword());
-//	            }
-//
-//	            try {
-//	                if (profile_pic != null && !profile_pic.isEmpty()) {
-//	                    newUser.setProfile_pic(usuarioService.uploadFile(profile_pic));
-//	                } else {
-//	                    newUser.setProfile_pic(u.getProfile_pic());
-//	                }
-//	            } catch (Exception e) {
-//	                Map<String, String> body = new HashMap<>();
-//	                body.put("error", "500");
-//	                body.put("message", e.getMessage());
-//	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-//	            }
-//
-//	            User response = usuarioService.save(newUser);
-//	            return ResponseEntity.status(HttpStatus.OK).body(usuarioService.parseToDTO(response));
-//	        } else {
-//	            String username = authentication.getName();
-//	            if (u.getEmail().equals(username)) {
-//	                newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-//	                newUser.setRole(u.getRole());
-//	                newUser.setEmail(u.getEmail());
-//	                User response = usuarioService.save(newUser);
-//	                return ResponseEntity.status(HttpStatus.OK).body(usuarioService.parseToDTO(response));
-//	            } else {
-//	                Map<String, String> body = new HashMap<>();
-//	                body.put("error", "403");
-//	                body.put("message", "You don't have permission for this");
-//	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
-//	            }
-//	        }
-//	    } else {
-//	        Map<String, String> body = new HashMap<>();
-//	        body.put("error", "404");
-//	        body.put("message", "User not found or does not exist");
-//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
-//	    }
-//	}
+
 
 	// Por si acaso necesito codificar las contraseñas
 //	@GetMapping("/usersPass")

@@ -12,7 +12,7 @@ public class TaskAdd {
 	private String limitDate;
 
 
-	private String status;
+	private Integer status;
 
 
 	private String priority;
@@ -30,7 +30,7 @@ public class TaskAdd {
 	}
 
 
-	public TaskAdd(String name, String description, String limitDate, String status, String priority, Long projectId,
+	public TaskAdd(String name, String description, String limitDate, Integer status, String priority, Long projectId,
 			Long userCreator) {
 		super();
 		this.name = name;
@@ -73,12 +73,12 @@ public class TaskAdd {
 	}
 
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

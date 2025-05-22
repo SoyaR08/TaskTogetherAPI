@@ -35,7 +35,7 @@ public class Task {
 	private LocalDate limitDate;
 
 	@Column(name = "status")
-	private String status;
+	private Integer status;
 
 	@Column(name = "priority")
 	private String priority;
@@ -67,7 +67,7 @@ public class Task {
 		this.userCreator = userCreator;
 	}
 
-	public Task(Long id, String name, String description, String status, String priority, Project project,
+	public Task(Long id, String name, String description, Integer status, String priority, Project project,
 			User userCreator) {
 		super();
 		this.id = id;
@@ -111,11 +111,11 @@ public class Task {
 		this.limitDate = limitDate;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
