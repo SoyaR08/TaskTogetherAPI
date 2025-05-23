@@ -1,5 +1,7 @@
 package com.tasktogether.dto;
 
+import java.util.List;
+
 public class ProjectAddDTO {
 
 	/*
@@ -12,6 +14,7 @@ public class ProjectAddDTO {
 	private String end_date;
 	private String status;
 	private Long userCreator;
+	private List<MinUserInfo> members;
 
 	public ProjectAddDTO() {
 		super();
@@ -19,14 +22,15 @@ public class ProjectAddDTO {
 	}
 
 	public ProjectAddDTO(String name, String description, String start_date, String end_date, String status,
-			Long user_creator) {
+			Long userCreator, List<MinUserInfo> members) {
 		super();
 		this.name = name;
 		this.description = description;
 		this.start_date = start_date;
 		this.end_date = end_date;
 		this.status = status;
-		this.userCreator = user_creator;
+		this.userCreator = userCreator;
+		this.members = members;
 	}
 
 	public String getName() {
@@ -75,6 +79,14 @@ public class ProjectAddDTO {
 
 	public void setUserCreator(Long user_creator) {
 		this.userCreator = user_creator;
+	}
+
+	public List<MinUserInfo> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<MinUserInfo> members) {
+		this.members = members;
 	}
 
 }

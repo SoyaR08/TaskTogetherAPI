@@ -3,18 +3,20 @@ package com.tasktogether.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.tasktogether.dto.MinUserInfo;
 import com.tasktogether.dto.ProjectAddDTO;
 import com.tasktogether.dto.ProjectSimpleDTO;
 import com.tasktogether.dto.project.ProjectHome;
 import com.tasktogether.dto.task.TaskList;
 import com.tasktogether.dto.user.UserMember;
+import com.tasktogether.model.Member;
 import com.tasktogether.model.Project;
 import com.tasktogether.model.User;
 import com.tasktogether.repository.ProjectRepository;
@@ -52,10 +54,21 @@ public class ProjectService {
 		return projectData.findByStatusAndUserCreator("IN_PROGRESS", u, pageable);
 	}
 	
-	public Project add(ProjectAddDTO p) {
+
+	
+	public Project addProject(ProjectAddDTO p) {
+		User creator = userMethods.findUser(p.getUserCreator());
+		Project prt = new Project(p, LocalDate.parse(p.getStart_date()), LocalDate.parse(p.getEnd_date()), creator);
 		
-		User u = userMethods.findUser(p.getUserCreator());
-		Project prt = new Project(p, LocalDate.parse(p.getStart_date()), LocalDate.parse(p.getEnd_date()), u);
+		List<User> usermembers = p.getMembers().stream().map(u -> userMethods.findUser(u.getId()))
+				.filter(Objects::nonNull) //Para objetos no nulos
+				.collect(Collectors.toList());
+		
+		List<Member> members = usermembers.stream().map(mem -> new Member(prt, mem, "PROJECT_MEMBER"))
+				.collect(Collectors.toList());
+		
+		prt.setMembers(members);
+		
 		return projectData.save(prt);
 	}
 	

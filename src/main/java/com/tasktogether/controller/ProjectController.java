@@ -136,7 +136,7 @@ public class ProjectController {
 	public ResponseEntity<?> addProyect(
 			@Parameter(description = "Credenciales de crear proyecto", required = true) @RequestBody ProjectAddDTO pdto) {
 
-		Project p = projectMethods.add(pdto);
+		Project p = projectMethods.addProject(pdto);
 		// Historical h = historicalMethods.addChange(p, p.getUser_creator());
 		Projectmindto pmdto = new Projectmindto(p);
 
