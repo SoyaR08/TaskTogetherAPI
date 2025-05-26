@@ -57,4 +57,11 @@ public class Defaultresponse {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
 	}
 	
+	public ResponseEntity<?> badrequestResponse(String message) {
+		Map<String, String> body = new HashMap<String, String>();
+		body.put("error", "400");
+		body.put("message", message);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+	}
+	
 }

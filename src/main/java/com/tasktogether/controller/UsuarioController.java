@@ -1,11 +1,10 @@
 package com.tasktogether.controller;
 
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -66,7 +65,7 @@ public class UsuarioController {
 
 	@Autowired
 	Defaultresponse serverResponse;
-	
+
 //	@Autowired
 //	private CloudinaryLib cloudinarylib;
 
@@ -129,14 +128,10 @@ public class UsuarioController {
 			String principal = auth.getName(); // Me va a dar el email
 
 			// Tengo que hacer que un usuario regular también pueda usar este endpoint
-			
+
 			if (!role.equals("GEN_ADMIN") && principal != email) {
 				return serverResponse.unauthorizedResponse("You don´t have permission for this");
 			}
-			
-			
-			
-			
 
 			User u = usuarioService.findUserByUsername(email);
 
@@ -166,6 +161,27 @@ public class UsuarioController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
 		}
 
+	}
+
+	@GetMapping("/users/find")
+	public ResponseEntity<?> getUsersByEmail(@RequestHeader("Authorization") String token, @RequestParam String email) {
+		if (token == null || token.isEmpty()) {
+			return serverResponse.forbiddenResponse("Token is required");
+		}
+
+		try {
+			String searchString = "%" + email + "%";
+			List<User> users = usuarioService.findUsersByUsername(searchString);
+			List<MinUserInfo> mins = users.stream().map(user -> new MinUserInfo(user)).collect(Collectors.toList());
+			return ResponseEntity.status(HttpStatus.OK).body(mins);
+		} catch (MalformedJwtException e) {
+			System.err.println(e.getMessage());
+			return serverResponse.badrequestResponse(e.getMessage());
+
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			return serverResponse.servererrorResponse(e.getMessage());
+		}
 	}
 
 	@GetMapping("/nonauth/users/{email}")
@@ -207,7 +223,7 @@ public class UsuarioController {
 			User u = usuarioService.findUser(id);
 
 			ObjectMapper obj = new ObjectMapper();
-			
+
 			PUTUserDTO put = new PUTUserDTO();
 			try {
 				put = obj.readValue(stringPUT, PUTUserDTO.class);
@@ -218,7 +234,7 @@ public class UsuarioController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			if (u != null) {
 				if ("GEN_ADMIN".equals(role)) {
 					User newUser = usuarioService.parseToUser(put);
@@ -420,8 +436,6 @@ public class UsuarioController {
 		}
 
 	}
-
-
 
 	// Por si acaso necesito codificar las contraseñas
 //	@GetMapping("/usersPass")

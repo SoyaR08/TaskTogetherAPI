@@ -50,6 +50,10 @@ public class UserService implements UserDetailsService{
 		return userData.findByEmailLike(username).get(0);
 	}
 	
+	public List<User> findUsersByUsername(String username) {
+		return userData.findByEmailLike(username);
+	}
+	
 	public User save(User u) {
 		return userData.save(u);
 	}
