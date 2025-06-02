@@ -48,7 +48,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name = "Usuarios", description = "Operaciones relacionadas con usuarios salvo login y register")
+@Tag(name = "Usuarios", description = "Operaciones relacionadas con usuarios")
 public class UsuarioController {
 
 	@Autowired
@@ -66,8 +66,6 @@ public class UsuarioController {
 	@Autowired
 	Defaultresponse serverResponse;
 
-//	@Autowired
-//	private CloudinaryLib cloudinarylib;
 
 	@GetMapping("/users")
 	@Operation(summary = "Obtener una lista de usuarios", description = "Devuelve todos los usuarios de la base de datos")
@@ -116,6 +114,7 @@ public class UsuarioController {
 
 	// Para obtener los datos de un usuario dado el email
 	@GetMapping("/api/users/{email}")
+	@Operation(summary = "Obtener usuario por email", description = "Devuelve un usuario dado su email")
 	public ResponseEntity<?> getUserByEmail(@RequestHeader("Authorization") String token, @PathVariable String email) {
 		if (token == null || token.isEmpty()) {
 			return serverResponse.forbiddenResponse("Token is required");
@@ -287,6 +286,7 @@ public class UsuarioController {
 	}
 
 	@PutMapping("/users/role/{id}")
+	@Operation(summary = "Cambiar rol de usuario", description = "Cambiar el rol de un usuario dado su id")
 	public ResponseEntity<?> changeUserRole(@RequestHeader("Authorization") String token, @PathVariable Long id,
 			@RequestBody UserChangeRole newRole) {
 		if (token == null || token.isEmpty()) {

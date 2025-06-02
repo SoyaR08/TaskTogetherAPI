@@ -38,7 +38,7 @@ public class Task {
 	private Integer status;
 
 	@Column(name = "priority")
-	private String priority;
+	private Integer priority;
 
 	@ManyToOne
 	@JoinColumn(name = "projectId")
@@ -49,7 +49,10 @@ public class Task {
 	private User userCreator;
 
 	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
-	public List<TaskUser> assignedUsers;
+	private List<TaskUser> assignedUsers;
+
+	@OneToMany(mappedBy = "taskId", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Comment> commentedtasks;
 
 	public Task() {
 		super();
@@ -67,7 +70,7 @@ public class Task {
 		this.userCreator = userCreator;
 	}
 
-	public Task(Long id, String name, String description, Integer status, String priority, Project project,
+	public Task(Long id, String name, String description, Integer status, Integer priority, Project project,
 			User userCreator) {
 		super();
 		this.id = id;
@@ -119,11 +122,11 @@ public class Task {
 		this.status = status;
 	}
 
-	public String getPriority() {
+	public Integer getPriority() {
 		return priority;
 	}
 
-	public void setPriority(String priority) {
+	public void setPriority(Integer priority) {
 		this.priority = priority;
 	}
 
@@ -149,6 +152,14 @@ public class Task {
 
 	public void setAssignedUsers(List<TaskUser> assignedUsers) {
 		this.assignedUsers = assignedUsers;
+	}
+
+	public List<Comment> getCommentedtasks() {
+		return commentedtasks;
+	}
+
+	public void setCommentedtasks(List<Comment> commentedtasks) {
+		this.commentedtasks = commentedtasks;
 	}
 
 	@Override

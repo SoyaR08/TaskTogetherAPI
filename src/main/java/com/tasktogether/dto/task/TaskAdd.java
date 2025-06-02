@@ -15,7 +15,7 @@ public class TaskAdd {
 	private Integer status;
 
 
-	private String priority;
+	private Integer priority;
 
 
 	private Long projectId;
@@ -30,7 +30,7 @@ public class TaskAdd {
 	}
 
 
-	public TaskAdd(String name, String description, String limitDate, Integer status, String priority, Long projectId,
+	public TaskAdd(String name, String description, String limitDate, Integer status, Integer priority, Long projectId,
 			Long userCreator) {
 		super();
 		this.name = name;
@@ -83,12 +83,12 @@ public class TaskAdd {
 	}
 
 
-	public String getPriority() {
+	public Integer getPriority() {
 		return priority;
 	}
 
 
-	public void setPriority(String priority) {
+	public void setPriority(Integer priority) {
 		this.priority = priority;
 	}
 

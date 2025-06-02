@@ -28,11 +28,9 @@ import com.tasktogether.dto.Projectmindto;
 import com.tasktogether.dto.historical.HistoricalList;
 import com.tasktogether.dto.project.ProjectHome;
 import com.tasktogether.libraries.Defaultresponse;
-import com.tasktogether.model.Historical;
 import com.tasktogether.model.Project;
 import com.tasktogether.model.User;
 import com.tasktogether.security.TokenUtils;
-import com.tasktogether.service.HistoricalService;
 import com.tasktogether.service.ProjectService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,6 +53,7 @@ public class ProjectController {
 	Defaultresponse serverResponse;
 
 	@GetMapping("/projects")
+	@Operation(summary = "Obtener una lista de proyectos", description = "Devuelve todos los proyectos de la base de datos")
 	public ResponseEntity<?> listProjects(@RequestHeader("Authorization") String token,
 			@RequestParam(defaultValue = "1", required = false) int pageNumber) {
 		if (token == null || token.isEmpty()) {
@@ -101,6 +100,7 @@ public class ProjectController {
 	}
 
 	@GetMapping("/projects/{id}")
+	@Operation(summary = "Obtener un proyecto", description = "Devuelve el proyecto al que corresponde el id proporcionado")
 	public ResponseEntity<?> getProject(@RequestHeader("Authorization") String token, @PathVariable Long id) {
 		if (token == null || token.isEmpty()) {
 			Map<String, String> body = new HashMap<String, String>();
@@ -145,6 +145,7 @@ public class ProjectController {
 	}
 
 	@PatchMapping("/projects/{id}")
+	@Operation(summary = "Finalizar un proyecto", description = "Marca un proyecto como finalizado")
 	public ResponseEntity<?> finishProject(@RequestHeader("Authorization") String token, @PathVariable Long id,
 			@RequestBody ProjectEditDTO p) {
 

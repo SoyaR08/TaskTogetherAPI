@@ -19,7 +19,7 @@ public class TaskList {
 	
 	private Integer status;
 	
-	private String priority;
+	private Integer priority;
 	
 	private Projectmindto project;
 	
@@ -32,7 +32,7 @@ public class TaskList {
 		// TODO Auto-generated constructor stub
 	}
 
-	public TaskList(Long id, String name, String description, String limitDate, Integer status, String priority,
+	public TaskList(Long id, String name, String description, String limitDate, Integer status, Integer priority,
 			Projectmindto project, MinUserInfo userCreator, List<MinUserInfo> workers) {
 		super();
 		this.id = id;
@@ -111,11 +111,11 @@ public class TaskList {
 		this.status = status;
 	}
 
-	public String getPriority() {
+	public Integer getPriority() {
 		return priority;
 	}
 
-	public void setPriority(String priority) {
+	public void setPriority(Integer priority) {
 		this.priority = priority;
 	}
 

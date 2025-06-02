@@ -70,6 +70,9 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<TaskUser> assignedTasks;
 
+	@OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Comment> comments;
+	
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -206,6 +209,14 @@ public class User implements UserDetails {
 
 	public void setAssignedTasks(List<TaskUser> assignedTasks) {
 		this.assignedTasks = assignedTasks;
+	}
+	
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	@Override

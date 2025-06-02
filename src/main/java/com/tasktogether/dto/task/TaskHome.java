@@ -14,14 +14,14 @@ public class TaskHome {
 	
 	private Integer status;
 	
-	private String priority;
+	private Integer priority;
 
 	public TaskHome() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public TaskHome(Long id, String name, String description, String limitDate, Integer status, String priority) {
+	public TaskHome(Long id, String name, String description, String limitDate, Integer status, Integer priority) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -81,11 +81,11 @@ public class TaskHome {
 		this.status = status;
 	}
 
-	public String getPriority() {
+	public Integer getPriority() {
 		return priority;
 	}
 
-	public void setPriority(String priority) {
+	public void setPriority(Integer priority) {
 		this.priority = priority;
 	}
 	
