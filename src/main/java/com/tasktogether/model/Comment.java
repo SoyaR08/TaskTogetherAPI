@@ -3,6 +3,8 @@ package com.tasktogether.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import com.tasktogether.dto.comment.Commentadd;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -46,6 +48,14 @@ public class Comment {
 		this.date = date;
 		this.userId = userId;
 		this.taskId = taskId;
+	}
+	
+	public Comment(Commentadd c, User u, Task t) {
+		super();
+		this.content = c.getContent();
+		this.date = LocalDate.parse(c.getDate());
+		this.userId = u;
+		this.taskId = t;
 	}
 
 	public Long getId() {

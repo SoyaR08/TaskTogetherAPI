@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.tasktogether.dto.MinUserInfo;
 import com.tasktogether.dto.task.TaskList;
 import com.tasktogether.model.Task;
+import com.tasktogether.model.TaskUser;
 
 @Service
 public class TaskTransformService {
@@ -19,6 +20,15 @@ public class TaskTransformService {
 			return new TaskList(t, users);
 		}).collect(Collectors.toList());
 		return parsed;
+	}
+	
+	public TaskList mapTasksToTaskList(Task t) {
+		List<MinUserInfo> users = mapTaskUserToMinUserInfo(t.getAssignedUsers());
+		return new TaskList(t, users);
+	}
+	
+	private List<MinUserInfo> mapTaskUserToMinUserInfo(List<TaskUser> l) {
+		return l.stream().map(assigned -> new MinUserInfo(assigned.getUser())).collect(Collectors.toList());
 	}
 
 }
