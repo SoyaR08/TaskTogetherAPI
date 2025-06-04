@@ -1,6 +1,7 @@
 package com.tasktogether.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,18 +69,23 @@ public class Task {
 		this.priority = t.getPriority();
 		this.project = project;
 		this.userCreator = userCreator;
+		this.assignedUsers = new ArrayList<TaskUser>();
+		this.commentedtasks = new ArrayList<Comment>();
 	}
 
-	public Task(Long id, String name, String description, Integer status, Integer priority, Project project,
-			User userCreator) {
+	public Task(Long id, String name, String description, LocalDate limitDate, Integer status, Integer priority,
+			Project project, User userCreator, List<TaskUser> assignedUsers, List<Comment> commentedtasks) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
+		this.limitDate = limitDate;
 		this.status = status;
 		this.priority = priority;
 		this.project = project;
 		this.userCreator = userCreator;
+		this.assignedUsers = assignedUsers;
+		this.commentedtasks = commentedtasks;
 	}
 
 	public Long getId() {

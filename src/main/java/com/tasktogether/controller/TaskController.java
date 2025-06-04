@@ -23,6 +23,7 @@ import com.tasktogether.model.Task;
 import com.tasktogether.service.HistoricalService;
 import com.tasktogether.service.TaskService;
 //import com.tasktogether.service.transform.TaskTransformService;
+import com.tasktogether.service.transform.TaskTransformService;
 
 @RestController
 public class TaskController {
@@ -33,8 +34,8 @@ public class TaskController {
 	@Autowired
 	HistoricalService historicalMethods;
 
-//	@Autowired
-//	TaskTransformService taskParseMethods;
+	@Autowired
+	TaskTransformService taskParseMethods;
 
 	@Autowired
 	Defaultresponse serverResponse;
@@ -45,16 +46,17 @@ public class TaskController {
 		return ResponseEntity.status(HttpStatus.OK).body(body);
 	}
 
-	@PostMapping("/tasks/add")
+	@PostMapping("/tasks")
 	public ResponseEntity<?> addTask(@RequestHeader("Authorization") String token, @RequestBody TaskAdd t) {
 		Map<String, String> response = new HashMap<>();
 
 		try {
 
 			Task newtask = taskMethods.add(t);
-			response.put("message", "Tarea agregada con éxito");
 
-			return ResponseEntity.status(HttpStatus.OK).body(response);
+			TaskList body = taskParseMethods.mapTasksToTaskList(newtask);
+
+			return ResponseEntity.ok(body);
 		} catch (Exception e) {
 			response.put("error", "500");
 			response.put("message", e.getMessage());
@@ -79,20 +81,20 @@ public class TaskController {
 
 		int currentStatus = t.getStatus();
 		int newStatus = newtask.getStatus();
-		
-	    try {
-	        if (!taskMethods.isValidChange(currentStatus, newStatus)) {
-	            return serverResponse.badrequestResponse("Transición de estado no permitida");
-	        }
 
-	        t.setStatus(newStatus);
-	        TaskList response = taskMethods.returnTaskList(taskMethods.changeStatus(t));
+		try {
+			if (!taskMethods.isValidChange(currentStatus, newStatus)) {
+				return serverResponse.badrequestResponse("Transición de estado no permitida");
+			}
 
-	        return ResponseEntity.ok(response);
+			t.setStatus(newStatus);
+			TaskList response = taskMethods.returnTaskList(taskMethods.changeStatus(t));
 
-	    } catch (Exception e) {
-	        return serverResponse.badrequestResponse(e.getMessage());
-	    }
+			return ResponseEntity.ok(response);
+
+		} catch (Exception e) {
+			return serverResponse.badrequestResponse(e.getMessage());
+		}
 
 	}
 

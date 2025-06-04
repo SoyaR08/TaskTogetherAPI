@@ -1,5 +1,6 @@
 package com.tasktogether.service.transform;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,8 @@ public class TaskTransformService {
 	}
 	
 	public TaskList mapTasksToTaskList(Task t) {
-		List<MinUserInfo> users = mapTaskUserToMinUserInfo(t.getAssignedUsers());
+		List<MinUserInfo> users = t.getAssignedUsers().size() > 0 ? 
+				mapTaskUserToMinUserInfo(t.getAssignedUsers()) : new ArrayList<MinUserInfo>();
 		return new TaskList(t, users);
 	}
 	

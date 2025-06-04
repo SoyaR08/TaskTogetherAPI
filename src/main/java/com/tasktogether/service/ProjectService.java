@@ -110,7 +110,10 @@ public class ProjectService {
 
 			}
 		});
-		;
+		
+		pending.sort((t1, t2) -> t2.getPriority() - t1.getPriority()); //Ordeno para que las tareas urgentes sean las primeras
+		progress.sort((t1, t2) -> t2.getPriority() - t1.getPriority());
+		finished.sort((t1, t2) -> t2.getPriority() - t1.getPriority());
 
 		List<UserMember> listDTO = p.getMembers().stream().map(user -> {
 			return new UserMember(user);

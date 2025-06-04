@@ -91,14 +91,12 @@ public class ProjectController {
 			return ResponseEntity.status(HttpStatus.OK).body(projectsDTO);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			Map<String, String> body = new HashMap<String, String>();
-			body.put("error", "500");
-			body.put("message", e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+			return serverResponse.servererrorResponse(e.getMessage());
+			
 		}
 
 	}
-
+	
 	@GetMapping("/projects/{id}")
 	@Operation(summary = "Obtener un proyecto", description = "Devuelve el proyecto al que corresponde el id proporcionado")
 	public ResponseEntity<?> getProject(@RequestHeader("Authorization") String token, @PathVariable Long id) {
@@ -178,7 +176,7 @@ public class ProjectController {
 
 	}
 
-	@GetMapping("/projects/{id}/historical")
+	@GetMapping("/projects/historical/{id}")
 	public ResponseEntity<?> getHistorical(@RequestHeader("Authorization") String token, @PathVariable Long id) {
 		if (token == null || token.isEmpty()) {
 			Map<String, String> body = new HashMap<String, String>();
