@@ -27,6 +27,7 @@ import com.tasktogether.dto.ProjectListDTO;
 import com.tasktogether.dto.Projectmindto;
 import com.tasktogether.dto.historical.HistoricalList;
 import com.tasktogether.dto.project.ProjectHome;
+import com.tasktogether.dto.user.UserMember;
 import com.tasktogether.libraries.Defaultresponse;
 import com.tasktogether.model.Project;
 import com.tasktogether.model.User;
@@ -114,7 +115,10 @@ public class ProjectController {
 			if (p == null) {
 				throw new Exception("Proyecto no encontrado o inexistente");
 			}
+			
+			ProjectHome ph = projectMethods.mapProjectToProjectHome(p);
 
+			return ResponseEntity.ok(ph);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Map<String, String> body = new HashMap<String, String>();
@@ -123,7 +127,6 @@ public class ProjectController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
 		}
 
-		return null;
 	}
 
 	@PostMapping("/projects/add")

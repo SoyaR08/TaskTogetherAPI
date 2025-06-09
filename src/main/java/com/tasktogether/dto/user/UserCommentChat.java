@@ -1,9 +1,8 @@
 package com.tasktogether.dto.user;
 
-import com.tasktogether.model.Member;
 import com.tasktogether.model.User;
 
-public class UserMember {
+public class UserCommentChat {
 
 	private Long id;
 	
@@ -11,33 +10,29 @@ public class UserMember {
 	
 	private String email;
 	
-	private String projectRole;
-	
 	private String profile_pic;
 
-	public UserMember() {
+	public UserCommentChat() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserMember(Long id, String name, String email, String projectRole, String profile_pic) {
+	public UserCommentChat(Long id, String name, String email, String profile_pic) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.email = email;
-		this.projectRole = projectRole;
 		this.profile_pic = profile_pic;
 	}
-	
-	public UserMember(Member m) {
-		super();
-		this.id = m.getUser().getId();
-		this.name = m.getUser().getName();
-		this.email = m.getUser().getEmail();
-		this.projectRole = m.getUserRol();
-		this.profile_pic = m.getUser().getProfile_pic();
-	}
 
+	public UserCommentChat(User u) {
+		super();
+		this.id = u.getId();
+		this.name = u.getName();
+		this.email = u.getEmail();
+		this.profile_pic = u.getProfile_pic();
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -60,14 +55,6 @@ public class UserMember {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getProjectRole() {
-		return projectRole;
-	}
-
-	public void setProjectRole(String projectRole) {
-		this.projectRole = projectRole;
 	}
 
 	public String getProfile_pic() {

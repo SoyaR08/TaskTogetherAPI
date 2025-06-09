@@ -53,6 +53,10 @@ public class TaskService {
 		}
 
 	}
+	
+	public List<Task> getProjectActiveTasks(Project p) {
+		return taskData.findByProjectAndStatusNot(p, 2);
+	}
 
 	public Task add(TaskAdd t) throws Exception {
 

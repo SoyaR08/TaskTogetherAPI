@@ -3,6 +3,7 @@ package com.tasktogether.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,14 +14,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tasktogether.dto.task.TaskAdd;
 import com.tasktogether.dto.task.TaskList;
+import com.tasktogether.dto.task.TaskSelectDto;
 import com.tasktogether.dto.task.Taskchangestatus;
 import com.tasktogether.libraries.Defaultresponse;
+import com.tasktogether.model.Project;
 import com.tasktogether.model.Task;
-import com.tasktogether.service.HistoricalService;
+import com.tasktogether.service.ProjectService;
 import com.tasktogether.service.TaskService;
 //import com.tasktogether.service.transform.TaskTransformService;
 import com.tasktogether.service.transform.TaskTransformService;
@@ -32,7 +36,7 @@ public class TaskController {
 	TaskService taskMethods;
 
 	@Autowired
-	HistoricalService historicalMethods;
+	ProjectService projectMethods;
 
 	@Autowired
 	TaskTransformService taskParseMethods;
@@ -46,6 +50,30 @@ public class TaskController {
 		return ResponseEntity.status(HttpStatus.OK).body(body);
 	}
 
+	@GetMapping("/tasks/project")
+	public ResponseEntity<?> getTasksOfAProject(@RequestHeader("Authorization") String token, @RequestParam Long projectId) {
+		
+		if (token == null || token.isBlank()) {
+			return serverResponse.badrequestResponse("Token requerido");
+		}
+		
+		Project p = projectMethods.findProject(projectId);
+		
+		if (p == null) {
+			return serverResponse.notfoundResponse("Proyecto no encontrado o no existente");
+		}
+		
+		List<Task> l = taskMethods.getProjectActiveTasks(p);
+		
+		if (l.size() == 0) {
+			return ResponseEntity.ok(l);
+		}
+		
+		List<TaskSelectDto> dto = l.stream().map(t -> new TaskSelectDto(t)).collect(Collectors.toList());
+		
+		return ResponseEntity.ok(dto);
+	}
+	
 	@PostMapping("/tasks")
 	public ResponseEntity<?> addTask(@RequestHeader("Authorization") String token, @RequestBody TaskAdd t) {
 		Map<String, String> response = new HashMap<>();

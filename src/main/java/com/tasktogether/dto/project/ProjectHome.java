@@ -13,7 +13,7 @@ public class ProjectHome {
 	
 	private String name;
 	
-	private List<UserMember> members;
+	private List<UserMember> members; //Posiblemente elimine esto
 	
 	private List<TaskList> pending;
 	

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tasktogether.dto.ProjectListDTO;
 import com.tasktogether.dto.member.Membernew;
 import com.tasktogether.dto.project.ProjectSelectDto;
+import com.tasktogether.dto.task.TaskSelectDto;
+import com.tasktogether.dto.user.UserMember;
 import com.tasktogether.libraries.Defaultresponse;
 import com.tasktogether.model.Member;
 import com.tasktogether.model.Project;
@@ -79,6 +81,40 @@ public class MemberController {
 				.map(membership -> new ProjectSelectDto(membership.getProject())).collect(Collectors.toList());
 		
 		return ResponseEntity.ok(userProjects);
+	}
+	
+	@GetMapping("/members/listmembers")
+	public ResponseEntity<?> usersMembership(@RequestHeader("Authorization") String token, @RequestParam Long projectId) {
+		if (token == null || token.isEmpty()) {
+			return serverResponse.badrequestResponse("Token requerido");
+		}
+		
+		Project p = projectMethods.findProject(projectId);
+		
+		if (p == null) {
+			return serverResponse.notfoundResponse("Proyecto no encontrado o no existente");
+		}
+		
+		List<UserMember> membersOf = p.getMembers().stream().map(m -> new UserMember(m)).collect(Collectors.toList());
+		
+		return ResponseEntity.ok(membersOf);
+	}
+	
+	@GetMapping("/members/listtasks")
+	public ResponseEntity<?> projectTasks(@RequestHeader("Authorization") String token, @RequestParam Long projectId) {
+		if (token == null || token.isEmpty()) {
+			return serverResponse.badrequestResponse("Token requerido");
+		}
+		
+		Project p = projectMethods.findProject(projectId);
+		
+		if (p == null) {
+			return serverResponse.notfoundResponse("Proyecto no encontrado o inexistente");
+		}
+		
+		List<TaskSelectDto> tasks = p.getTasks().stream().map(t -> new TaskSelectDto(t)).collect(Collectors.toList());
+		
+		return ResponseEntity.ok(tasks);
 	}
 	
 	@PostMapping("/members")

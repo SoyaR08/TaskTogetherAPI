@@ -1,8 +1,9 @@
 package com.tasktogether.dto.comment;
 
+import com.tasktogether.dto.user.UserCommentChat;
 import com.tasktogether.model.Comment;
 
-public class Commentlist {
+public class CommentList {
 
 	private Long id;
 	
@@ -10,31 +11,48 @@ public class Commentlist {
 	
 	private String date;
 	
-	private Long userId;
+	private UserCommentChat user;
 	
 	private Long taskId;
 
-	public Commentlist() {
+	private boolean owner;
+	
+	public CommentList() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Commentlist(Long id, String content, String date, Long userId, Long taskId) {
+	
+
+	public CommentList(Long id, String content, String date, UserCommentChat user, Long taskId, boolean owner) {
 		super();
 		this.id = id;
 		this.content = content;
 		this.date = date;
-		this.userId = userId;
+		this.user = user;
 		this.taskId = taskId;
+		this.owner = owner;
 	}
 
-	public Commentlist(Comment c) {
+
+
+	public CommentList(Comment c) {
 		super();
 		this.id = c.getId();
 		this.content = c.getContent();
 		this.date = c.getDate().toString();
-		this.userId = c.getUserId().getId();
+		this.user = new UserCommentChat(c.getUserId());
 		this.taskId = c.getTaskId().getId();
+	}
+	
+	public CommentList(Comment c, boolean owner) {
+		super();
+		this.id = c.getId();
+		this.content = c.getContent();
+		this.date = c.getDate().toString();
+		this.user = new UserCommentChat(c.getUserId());
+		this.taskId = c.getTaskId().getId();
+		this.owner = owner;
 	}
 	
 	public Long getId() {
@@ -61,13 +79,29 @@ public class Commentlist {
 		this.date = date;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public UserCommentChat getUser() {
+		return user;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+
+
+	public void setUser(UserCommentChat user) {
+		this.user = user;
 	}
+
+
+
+	public boolean isOwner() {
+		return owner;
+	}
+
+
+
+	public void setOwner(boolean owner) {
+		this.owner = owner;
+	}
+
+
 
 	public Long getTaskId() {
 		return taskId;
