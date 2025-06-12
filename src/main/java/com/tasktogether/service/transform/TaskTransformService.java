@@ -32,5 +32,9 @@ public class TaskTransformService {
 	private List<MinUserInfo> mapTaskUserToMinUserInfo(List<TaskUser> l) {
 		return l.stream().map(assigned -> new MinUserInfo(assigned.getUser())).collect(Collectors.toList());
 	}
+	
+	public List<Task> mapTaskUserToTask(List<TaskUser> tu) {
+		return tu.stream().map(taskuser -> taskuser.getTask()).collect(Collectors.toList());
+	}
 
 }

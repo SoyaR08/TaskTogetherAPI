@@ -88,6 +88,7 @@ public class TaskService {
 	}
 
 	public boolean isValidChange(int actualStatus, int newStatus) {
+
 		switch (actualStatus) {
 		case 0:
 			return newStatus == 1; // pendiente → en progreso
