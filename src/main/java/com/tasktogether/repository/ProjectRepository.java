@@ -9,7 +9,7 @@ import com.tasktogether.model.User;
 
 public interface ProjectRepository extends JpaRepository<Project, Long>{
 
-	public Page<Project> findByStatusAndUserCreator(String status, User user_creator, 
+	public Page<Project> findByStatusAndUserCreator(Integer status, User user_creator, 
 			Pageable pageable);
 	
 }

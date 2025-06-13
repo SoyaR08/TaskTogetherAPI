@@ -32,6 +32,7 @@ import com.tasktogether.libraries.Defaultresponse;
 import com.tasktogether.model.Project;
 import com.tasktogether.model.User;
 import com.tasktogether.security.TokenUtils;
+import com.tasktogether.service.HistoricalService;
 import com.tasktogether.service.ProjectService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,8 +48,8 @@ public class ProjectController {
 	@Autowired
 	ProjectService projectMethods;
 
-//	@Autowired
-//	HistoricalService historicalMethods;
+	@Autowired
+	HistoricalService historicalMethods;
 
 	@Autowired
 	Defaultresponse serverResponse;

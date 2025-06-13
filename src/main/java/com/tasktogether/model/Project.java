@@ -43,8 +43,8 @@ public class Project {
 	@Schema(description = "Fecha de fin del proyecto", example = "14/06/2025")
 	private LocalDate end_date;
 	@Column(name = "status")
-	@Schema(description = "Estado del proyecto", example = "IN_PROGRESS")
-	private String status;
+	@Schema(description = "Estado del proyecto", example = "0")
+	private Integer status;
 	@Column(name = "project_img")
 	@Schema(description = "Portada del proyecto")
 	private String project_img;
@@ -67,7 +67,7 @@ public class Project {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Project(Long id, String name, String description, LocalDate start_date, LocalDate end_date, String status,
+	public Project(Long id, String name, String description, LocalDate start_date, LocalDate end_date, Integer status,
 			String project_img, User user_creator) {
 		super();
 		this.id = id;
@@ -143,11 +143,11 @@ public class Project {
 		this.end_date = end_date;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

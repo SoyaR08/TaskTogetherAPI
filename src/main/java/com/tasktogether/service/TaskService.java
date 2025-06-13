@@ -115,4 +115,8 @@ public class TaskService {
 	public TaskList returnTaskList(Task t) {
 		return taskParseMethods.mapTasksToTaskList(t);
 	}
+	
+	public List<Task> getTasksByUserMail(String email) {
+		return taskData.findTasksByUserEmail(email);
+	}
 }

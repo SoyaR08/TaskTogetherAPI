@@ -22,6 +22,7 @@ import com.tasktogether.model.TaskUser;
 import com.tasktogether.model.TaskUserID;
 import com.tasktogether.model.User;
 import com.tasktogether.security.TokenUtils;
+import com.tasktogether.service.TaskService;
 import com.tasktogether.service.TaskUserService;
 import com.tasktogether.service.UserService;
 import com.tasktogether.service.transform.TaskTransformService;
@@ -36,6 +37,9 @@ public class TaskUserController {
 	
 	@Autowired
 	UserService usuarioService;
+	
+	@Autowired
+	TaskService taskMethods;
 	
 	@Autowired
 	TaskTransformService taskParseMethods;
@@ -53,15 +57,17 @@ public class TaskUserController {
 			UsernamePasswordAuthenticationToken auth = TokenUtils.decodeToken(token);
 			String principal = auth.getName(); // Me va a dar el email
 			
-			User u = usuarioService.findUserByUsername(principal);
+//			User u = usuarioService.findUserByUsername(principal);
+//			
+//			if (u == null) {
+//				return serverResponse.notfoundResponse("Usuario no encontrado o inexistente");
+//			}
+//			
+//			List<Task> tasks = taskParseMethods.mapTaskUserToTask(u.getAssignedTasks());
 			
-			if (u == null) {
-				return serverResponse.notfoundResponse("Usuario no encontrado o inexistente");
-			}
+			List<Task> tasks = taskMethods.getTasksByUserMail(principal);
 			
-			List<Task> tasks = taskParseMethods.mapTaskUserToTask(u.getAssignedTasks());
-			
-			tasks.sort((t1, t2) -> t2.getPriority() - t1.getPriority());
+//			tasks.sort((t1, t2) -> t2.getPriority() - t1.getPriority());
 			
 			List<TaskList> l = taskParseMethods.mapTasksToTaskList(tasks);
 			

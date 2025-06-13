@@ -53,7 +53,7 @@ public class ProjectService {
 	}
 
 	public Page<Project> getInProgressUserProjects(User u, Pageable pageable) {
-		return projectData.findByStatusAndUserCreator("IN_PROGRESS", u, pageable);
+		return projectData.findByStatusAndUserCreator(0, u, pageable);
 	}
 
 	public Project addProject(ProjectAddDTO p) {

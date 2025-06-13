@@ -12,7 +12,7 @@ public class ProjectAddDTO {
 	private String description;
 	private String start_date;
 	private String end_date;
-	private String status;
+	private Integer status;
 	private Long userCreator;
 	private List<MinUserInfo> members;
 
@@ -21,7 +21,7 @@ public class ProjectAddDTO {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProjectAddDTO(String name, String description, String start_date, String end_date, String status,
+	public ProjectAddDTO(String name, String description, String start_date, String end_date, Integer status,
 			Long userCreator, List<MinUserInfo> members) {
 		super();
 		this.name = name;
@@ -65,11 +65,11 @@ public class ProjectAddDTO {
 		this.end_date = end_date;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
