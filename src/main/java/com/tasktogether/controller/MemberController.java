@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tasktogether.dto.ProjectListDTO;
+import com.tasktogether.dto.ProjectListDto;
 import com.tasktogether.dto.member.Membernew;
 import com.tasktogether.dto.project.ProjectSelectDto;
 import com.tasktogether.dto.task.TaskSelectDto;
@@ -56,8 +56,8 @@ public class MemberController {
 		
 		List<Member> memberships = memberMethods.findMembershipsByUser(u);
 		
-		List<ProjectListDTO> userProjects = memberships.stream()
-				.map(membership -> new ProjectListDTO(membership.getProject())).collect(Collectors.toList());
+		List<ProjectListDto> userProjects = memberships.stream()
+				.map(membership -> new ProjectListDto(membership.getProject())).collect(Collectors.toList());
 		
 		return ResponseEntity.ok(userProjects);
 		

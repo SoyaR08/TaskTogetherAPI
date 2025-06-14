@@ -19,6 +19,7 @@ import com.tasktogether.dto.task.TaskList;
 import com.tasktogether.dto.user.UserMember;
 import com.tasktogether.model.Member;
 import com.tasktogether.model.Project;
+import com.tasktogether.model.Task;
 import com.tasktogether.model.TaskUser;
 import com.tasktogether.model.User;
 import com.tasktogether.repository.ProjectRepository;
@@ -68,6 +69,8 @@ public class ProjectService {
 				.collect(Collectors.toList());
 
 		prt.setMembers(members);
+		
+		prt.setProject_img("https://res.cloudinary.com/dv5lyqil9/image/upload/v1749921548/project_gdpyb4.jpg");
 
 		return projectData.save(prt);
 	}
@@ -88,6 +91,12 @@ public class ProjectService {
 		return simpleList;
 	}
 
+	public boolean canBeFinished(Project p) {
+	    return p.getTasks().isEmpty() || 
+	           p.getTasks().stream().allMatch(task -> task.getStatus() == 2);
+	}
+
+	
 	public ProjectHome mapProjectToProjectHome(Project p) {
 
 		List<TaskList> pending = new ArrayList<>();

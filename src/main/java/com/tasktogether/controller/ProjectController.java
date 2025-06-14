@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,17 +24,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tasktogether.dto.ProjectAddDTO;
 import com.tasktogether.dto.ProjectEditDTO;
-import com.tasktogether.dto.ProjectListDTO;
+import com.tasktogether.dto.ProjectListDto;
 import com.tasktogether.dto.Projectmindto;
 import com.tasktogether.dto.historical.HistoricalList;
 import com.tasktogether.dto.project.ProjectHome;
-import com.tasktogether.dto.user.UserMember;
 import com.tasktogether.libraries.Defaultresponse;
+import com.tasktogether.model.Member;
 import com.tasktogether.model.Project;
 import com.tasktogether.model.User;
 import com.tasktogether.security.TokenUtils;
-import com.tasktogether.service.HistoricalService;
+import com.tasktogether.service.MemberService;
 import com.tasktogether.service.ProjectService;
+import com.tasktogether.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -46,11 +48,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ProjectController {
 
 	@Autowired
-	ProjectService projectMethods;
+	private ProjectService projectMethods;
+
+//	@Autowired
+//	private HistoricalService historicalMethods;
 
 	@Autowired
-	HistoricalService historicalMethods;
-
+	private UserService usuarioService;
+	
+	@Autowired
+	private MemberService memberMethods;
+	
 	@Autowired
 	Defaultresponse serverResponse;
 
@@ -69,7 +77,7 @@ public class ProjectController {
 			UsernamePasswordAuthenticationToken auth = TokenUtils.decodeToken(token);
 			String principal = auth.getName(); // Me devolverá el email
 
-			User u = projectMethods.findOwner(principal);
+			User u = usuarioService.findUserByUsername(principal);
 
 			if (u == null) {
 				return serverResponse.notfoundResponse("No se ha encontrado al usuario con el email dado");
@@ -80,17 +88,16 @@ public class ProjectController {
 			if (pageNumber < 1) {
 				pageable = PageRequest.of(0, 9);
 			} else {
-				pageable = PageRequest.of(pageNumber - 1, 9);
+				pageable = PageRequest.of(pageNumber - 1, 9, Sort.by("project.status").ascending());
 			}
-
-			Page<Project> projects = projectMethods.getInProgressUserProjects(u, pageable);
-
-			Page<ProjectListDTO> projectsDTO = projects.map(project -> {
-				ProjectListDTO pldto = new ProjectListDTO(project);
-				return pldto;
+			
+			Page<Member> projects = memberMethods.findUserProjects(u, pageable);
+			
+			Page<ProjectListDto> projectsDto = projects.map(prj -> {
+				return new ProjectListDto(prj.getProject(), prj.getProject().getUser_creator() == u);
 			});
 
-			return ResponseEntity.status(HttpStatus.OK).body(projectsDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(projectsDto);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			return serverResponse.servererrorResponse(e.getMessage());
@@ -166,6 +173,10 @@ public class ProjectController {
 				throw new Exception("No existe tal proyecto");
 			}
 
+			if (!projectMethods.canBeFinished(prj)) {
+				serverResponse.badrequestResponse("Las tareas de este proyecto aún no han finalizado");
+			}
+			
 			prj.setStatus(p.getStatus());
 
 			Projectmindto pmdto = new Projectmindto(projectMethods.finish(prj));
