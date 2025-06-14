@@ -32,12 +32,18 @@ import com.tasktogether.dto.PUTUserDTO;
 import com.tasktogether.dto.ProjectSimpleDTO;
 import com.tasktogether.dto.UserChangeRole;
 import com.tasktogether.dto.UserDTO;
+import com.tasktogether.dto.UserDashboard;
 import com.tasktogether.dto.access.LoginDTO;
 import com.tasktogether.dto.access.RegisterDTO;
+import com.tasktogether.dto.project.ProjectCard;
+import com.tasktogether.dto.task.TaskEsentialDetails;
 import com.tasktogether.libraries.Defaultresponse;
+import com.tasktogether.model.Task;
 import com.tasktogether.model.User;
 import com.tasktogether.security.TokenUtils;
 import com.tasktogether.service.EmailService;
+import com.tasktogether.service.HistoricalService;
+import com.tasktogether.service.TaskUserService;
 import com.tasktogether.service.UserService;
 
 import io.jsonwebtoken.MalformedJwtException;
@@ -52,7 +58,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UsuarioController {
 
 	@Autowired
-	UserService usuarioService;
+	private UserService usuarioService;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -62,10 +68,15 @@ public class UsuarioController {
 
 	@Autowired
 	private EmailService emailservice;
+	
+	@Autowired
+	private HistoricalService historicalMethods;
 
 	@Autowired
-	Defaultresponse serverResponse;
-
+	private TaskUserService taskuserMethods;
+	
+	@Autowired
+	private Defaultresponse serverResponse;
 
 	@GetMapping("/users")
 	@Operation(summary = "Obtener una lista de usuarios", description = "Devuelve todos los usuarios de la base de datos")
@@ -435,6 +446,42 @@ public class UsuarioController {
 			throw new Exception();
 		}
 
+	}
+
+	@GetMapping("/users/dashboard")
+	public ResponseEntity<?> getDashboard(@RequestHeader("Authorization") String token) {
+		if (token == null || token.isEmpty()) {
+			return serverResponse.badrequestResponse("Token requerido");
+		}
+
+		// Decodifico el token para asegurarme de que
+		UsernamePasswordAuthenticationToken auth = TokenUtils.decodeToken(token);
+		String principal = auth.getName(); // Me va a dar el email
+		
+		String searchString = "%" + principal + "%";
+		
+		User u = usuarioService.findUserByUsername(searchString);
+		
+		List<ProjectCard> recentProjects = historicalMethods.getRecentProjects(u.getId())
+				.stream().map(project -> new ProjectCard(project)).collect(Collectors.toList());
+
+		Integer activeProjectsNumber = recentProjects.size();
+		
+		List<TaskEsentialDetails> toExpireTasks = taskuserMethods.pendingToExpire(u.getId())
+				.stream().map(task -> new TaskEsentialDetails(task)).collect(Collectors.toList());
+		
+		Integer toExpireTasksNumber = toExpireTasks.size();
+		
+		List<TaskEsentialDetails> progressTasks = taskuserMethods.progressTasks(u.getId())
+				.stream().map(task -> new TaskEsentialDetails(task)).collect(Collectors.toList());
+		
+		Integer progressTaskNumber = progressTasks.size();
+		
+		UserDashboard ud = new UserDashboard(activeProjectsNumber, progressTaskNumber, toExpireTasksNumber, progressTasks, toExpireTasks, recentProjects);
+		
+
+		
+		return ResponseEntity.ok(ud);
 	}
 
 	// Por si acaso necesito codificar las contraseñas

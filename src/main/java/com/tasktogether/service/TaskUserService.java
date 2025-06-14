@@ -1,5 +1,8 @@
 package com.tasktogether.service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +36,14 @@ public class TaskUserService {
 	
 	public Task findTaskbyId(Long id) {
 		return taskData.findById(id).orElse(null);
+	}
+	
+	public List<Task> pendingToExpire(Long userId) {
+		return taskuserData.findTasksExpiringSoon(userId, LocalDate.now(), LocalDate.now().plusDays(3));
+	}
+	
+	public List<Task> progressTasks(Long userId) {
+		return taskuserData.findUpcomingTasks(userId, LocalDate.now());
 	}
 	
 	public boolean existsAssignement(TaskUserID tu) {
