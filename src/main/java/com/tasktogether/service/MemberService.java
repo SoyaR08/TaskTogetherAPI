@@ -3,6 +3,8 @@ package com.tasktogether.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.tasktogether.model.Member;
@@ -25,5 +27,9 @@ public class MemberService {
 	
 	public List<Member> addMembers(List<Member> l) {
 		return memberData.saveAll(l);
+	}
+	
+	public Page<Member> findUserProjects(User user, Pageable pageable) {
+		return memberData.findByUserEquals(user, pageable);
 	}
 }

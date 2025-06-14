@@ -2,7 +2,7 @@ package com.tasktogether.dto;
 
 import com.tasktogether.model.Project;
 
-public class ProjectListDTO {
+public class ProjectListDto {
 
 	/**
 	 * He creado esta clase para poder listar la información relevante de los
@@ -15,18 +15,22 @@ public class ProjectListDTO {
 
 	private String description;
 
+	private Integer status;
+
 	private String start_date;
 
 	private String end_date;
 
 	private String project_img;
 
-	public ProjectListDTO() {
+	private boolean owner;
+
+	public ProjectListDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProjectListDTO(Long id, String name, String description, String start_date, String end_date,
+	public ProjectListDto(Long id, String name, String description, String start_date, String end_date,
 			String project_img) {
 		super();
 		this.id = id;
@@ -36,8 +40,8 @@ public class ProjectListDTO {
 		this.end_date = end_date;
 		this.project_img = project_img;
 	}
-	
-	public ProjectListDTO(Project p) {
+
+	public ProjectListDto(Project p) {
 		super();
 		this.id = p.getId();
 		this.name = p.getName();
@@ -45,6 +49,18 @@ public class ProjectListDTO {
 		this.start_date = p.getStart_date().toString();
 		this.end_date = p.getEnd_date().toString();
 		this.project_img = p.getProject_img();
+	}
+
+	public ProjectListDto(Project p, boolean owner) {
+		super();
+		this.id = p.getId();
+		this.name = p.getName();
+		this.status = p.getStatus();
+		this.description = p.getDescription();
+		this.start_date = p.getStart_date().toString();
+		this.end_date = p.getEnd_date().toString();
+		this.project_img = p.getProject_img();
+		this.owner = owner;
 	}
 
 	public Long getId() {
@@ -61,6 +77,14 @@ public class ProjectListDTO {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	public String getDescription() {
@@ -93,6 +117,14 @@ public class ProjectListDTO {
 
 	public void setProject_img(String project_img) {
 		this.project_img = project_img;
+	}
+
+	public boolean isOwner() {
+		return owner;
+	}
+
+	public void setOwner(boolean isOwner) {
+		this.owner = isOwner;
 	}
 
 }
