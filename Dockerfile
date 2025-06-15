@@ -1,5 +1,5 @@
 # Usa una imagen oficial de OpenJDK con Maven para compilar y ejecutar
-FROM maven:3.9.4-openjdk-17 AS build
+FROM maven:3.8.5-openjdk-17 AS build
 
 WORKDIR /app
 
