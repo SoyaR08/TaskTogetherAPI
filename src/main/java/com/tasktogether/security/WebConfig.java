@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Permitir todas las rutas de la API
-                .allowedOrigins("http://localhost:4200") // Dominios permitidos
+                .allowedOrigins("https://task-together-zeta.vercel.app/") // Dominios permitidos
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS") // Métodos permitidos
                 .allowCredentials(true); // Permitir credenciales (cookies, headers de autenticación, etc.)
     }
