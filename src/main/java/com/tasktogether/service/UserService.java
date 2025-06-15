@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.tasktogether.dto.MinUserInfo;
-import com.tasktogether.dto.PUTUserDTO;
+import com.tasktogether.dto.PutUserDto;
 import com.tasktogether.dto.ProjectSimpleDTO;
 import com.tasktogether.dto.UserDTO;
 import com.tasktogether.model.Project;
@@ -101,7 +101,7 @@ public class UserService implements UserDetailsService{
 		return simpleList;
 	}
 	
-	public User parseToUser(PUTUserDTO putDTO) {
+	public User parseToUser(PutUserDto putDTO) {
 		
 		User u = new User(putDTO.getName(), putDTO.getRole(), 
 				putDTO.getAddress(), putDTO.getEmail(), putDTO.getPassword(), putDTO.getJob());

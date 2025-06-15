@@ -28,7 +28,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasktogether.dto.MinUserInfo;
-import com.tasktogether.dto.PUTUserDTO;
+import com.tasktogether.dto.PutUserDto;
 import com.tasktogether.dto.ProjectSimpleDTO;
 import com.tasktogether.dto.UserChangeRole;
 import com.tasktogether.dto.UserDTO;
@@ -234,9 +234,9 @@ public class UsuarioController {
 
 			ObjectMapper obj = new ObjectMapper();
 
-			PUTUserDTO put = new PUTUserDTO();
+			PutUserDto put = new PutUserDto();
 			try {
-				put = obj.readValue(stringPUT, PUTUserDTO.class);
+				put = obj.readValue(stringPUT, PutUserDto.class);
 			} catch (JsonMappingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -250,6 +250,7 @@ public class UsuarioController {
 					User newUser = usuarioService.parseToUser(put);
 					newUser.setId(u.getId());
 					newUser.setEmail(u.getEmail());
+					newUser.setRole(role);
 					String raw = put.getPassword();
 					if (raw != null && !raw.isBlank()) {
 						newUser.setPassword(passwordEncoder.encode(raw));
