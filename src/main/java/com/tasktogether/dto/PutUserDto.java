@@ -1,6 +1,6 @@
 package com.tasktogether.dto;
 
-public class PUTUserDTO {
+public class PutUserDto {
 
 	private String name;
 
@@ -13,12 +13,12 @@ public class PUTUserDTO {
 	private String password;
 
 	private String job;
-	public PUTUserDTO() {
+	public PutUserDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public PUTUserDTO(String name, String role, String address, String email, String password, String job) {
+	public PutUserDto(String name, String role, String address, String email, String password, String job) {
 		super();
 		this.name = name;
 		this.role = role;
